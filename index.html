@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Classroom Champions</title>
+<style>
+:root{--navy:#10213d;--panel:#1b3454;--pink:#b93678;--gold:#f5d58d}
+*{box-sizing:border-box}
+body{margin:0;padding:14px;background:var(--navy);color:#fff;font-family:Arial,sans-serif}
+main{max-width:900px;margin:auto}
+.hero{text-align:center;background:linear-gradient(130deg,#421b48,#17466b);border:2px solid #e9c879;border-radius:15px;padding:18px}
+.hero h1{font-family:Georgia,serif;color:#ffe4a3;margin:8px 0;font-size:clamp(26px,5vw,40px)}
+.hero p{color:#f5d9a1;margin:5px}
+.panel{background:var(--panel);border:1px solid #b28b50;border-radius:13px;padding:14px;margin:12px 0}
+h2{color:var(--gold);font-size:20px;margin:4px 0 12px}
+button,select,input,textarea{font:inherit;border:0;border-radius:9px;padding:11px}
+button{cursor:pointer;background:var(--pink);color:white;font-weight:bold}
+button.secondary{background:#40536c}
+button.light{background:#e4d5e0;color:#49283d}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #ffe29b;outline-offset:2px}
+.class-switch,.tabs,.actions{display:flex;gap:8px;flex-wrap:wrap}
+.class-switch button{flex:1}
+.tabs{margin:12px 0;overflow-x:auto}
+.tabs button{white-space:nowrap;background:#304663;font-size:13px}
+.tabs button.active{background:var(--pink)}
+.page[hidden]{display:none}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.group{background:#29415f;border:1px solid #8e754c;border-radius:11px;padding:12px}
+.group strong{color:#ffe2a0}
+.score{text-align:center;font-size:32px;padding:7px;color:#fff}
+.criteria{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin:9px 0}
+.actions button{min-width:44px;padding:8px 13px}
+.total{color:#ffe5a4;text-align:center;font-size:12px}
+.clock{font-size:clamp(48px,12vw,68px);text-align:center;color:#ffe29b;font-weight:bold;margin:15px}
+.wheel{padding:25px;text-align:center;font-size:23px;border:2px dashed #e7c16d;border-radius:12px;margin:12px 0;color:#ffe5a3;overflow-wrap:anywhere}
+.rank{padding:11px;border-bottom:1px solid #506078;display:flex;justify-content:space-between}
+.muted{color:#c6d2e1;font-size:12px}
+.wide{width:100%;margin-top:9px}
+input,select,textarea{background:white;color:#222;max-width:100%}
+input[type=text]{width:100%}
+.meter{height:17px;background:#465b75;border-radius:20px;overflow:hidden}
+.bar{height:100%;width:0;background:#e8c56d;transition:width .1s}
+footer{text-align:center;color:#eacb82;font-size:12px;padding:16px}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+<div style="font-size:30px">👑 ⭐ 🏆</div>
+<div style="font-size:11px;letter-spacing:2px;color:#f4d48c">SMART CLASSROOM MANAGEMENT</div>
+<h1>Classroom Champions</h1>
+<p>Let's Learn, Play &amp; Shine!</p>
+<div style="color:#f5d48d">★ ★ ★ ★ ★</div>
+<p style="font-size:12px;color:#ffe0a1">Tr/Nayfah AlSharif</p>
+</header>
+
+<section class="panel">
+<h2>Choose Your Class</h2>
+<div class="class-switch">
+<button id="class1">Grade 6 – Class 1</button>
+<button id="class2" class="secondary">Grade 6 – Class 2</button>
+</div>
+<p id="classMsg" class="muted">Class 1 points are independent.</p>
+</section>
+
+<nav class="tabs" aria-label="Classroom tools">
+<button class="active" data-page="points">🏆 Points</button>
+<button data-page="timer">⏱ Timer</button>
+<button data-page="wheel">🎡 Names</button>
+<button data-page="roles">👩‍🎓 Roles</button>
+<button data-page="voice">🔊 Voice</button>
+<button data-page="ranking">🥇 Ranking</button>
+</nav>
+
+<section id="points" class="page panel">
+<h2>⭐ Team Points</h2>
+<p class="muted">Award points for discipline, quietness, speed and cooperation.</p>
+<div id="groups" class="groups"></div>
+<button id="resetPoints" class="wide light">↻ Reset This Class</button>
+</section>
+
+<section id="timer" class="page panel" hidden>
+<h2>⏱ Classroom Timer</h2>
+<div id="clock" class="clock">02:00</div>
+<select id="minutes" class="wide">
+<option value="60">1 Minute</option><option value="120" selected>2 Minutes</option>
+<option value="180">3 Minutes</option><option value="300">5 Minutes</option><option value="600">10 Minutes</option>
+</select>
+<div class="actions" style="margin-top:10px">
+<button id="start" style="flex:1">▶ Start</button><button id="pause" style="flex:1">Ⅱ Pause</button><button id="resetTimer" class="light" style="flex:1">↻ Reset</button>
+</div>
+<p id="timerStatus" class="muted" style="text-align:center">Ready!</p>
+</section>
+
+<section id="wheel" class="page panel" hidden>
+<h2>🎡 Random Name Picker</h2>
+<p class="muted">Enter names, one per line. Names are kept only in this browser session.</p>
+<textarea id="names" rows="6" style="width:100%" placeholder="Student 1&#10;Student 2&#10;Student 3"></textarea>
+<button id="pick" class="wide">🎡 Pick a Student</button>
+<div id="winner" class="wheel">Who is today's star? ⭐</div>
+</section>
+
+<section id="roles" class="page panel" hidden>
+<h2>👩‍🎓 Student Roles</h2>
+<p class="muted">Enter student names in the Names tab, then assign a role.</p>
+<div id="roleList"></div>
+</section>
+
+<section id="voice" class="page panel" hidden>
+<h2>🔊 Voice Level Meter</h2>
+<div id="soundLabel" style="text-align:center;padding:14px">Not measured</div>
+<div class="meter"><div id="bar" class="bar"></div></div>
+<button id="mic" class="wide">🎤 Start Voice Meter</button>
+<p id="micMsg" class="muted">Microphone permission is required. Browser support may vary.</p>
+</section>
+
+<section id="ranking" class="page panel" hidden>
+<h2>🥇 Leaderboard</h2>
+<div id="rankingList"></div>
+</section>
+<footer>Designed by Tr/Nayfah AlSharif 🌷</footer>
+</main>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const teams = ['SMART','BRILLIANT','CREATIVE','GENIUS','EXCELLENT'];
+const criteria = ['Discipline','Quietness','Speed','Cooperation'];
+let currentClass = 0;
+let scores = [teams.map(()=>[0,0,0,0]), teams.map(()=>[0,0,0,0])];
+let seconds = 120, timer = null, stream = null, audioContext = null, animation = null;
+
+function render() {
+  $('groups').innerHTML = teams.map((name,t) => `
+    <article class="group">
+      <strong>⭐ ${name}</strong>
+      <div class="score">${scores[currentClass][t].reduce((a,b)=>a+b,0)}</div>
+      ${criteria.map((c,k)=>`
+        <div class="criteria"><span>${c}: <b>${scores[currentClass][t][k]}</b></span>
+          <span class="actions">
+            <button class="light" data-team="${t}" data-k="${k}" data-delta="-1" aria-label="Remove one ${c} point from ${name}">−</button>
+            <button data-team="${t}" data-k="${k}" data-delta="1" aria-label="Add one ${c} point to ${name}">+1</button>
+          </span>
+        </div>`).join('')}
+    </article>`).join('');
+  $('rankingList').innerHTML = teams.map((name,i)=>({
+    name,total:scores[currentClass][i].reduce((a,b)=>a+b,0)
+  })).sort((a,b)=>b.total-a.total).map((x,i)=>`
+    <div class="rank"><span>${['🥇','🥈','🥉','⭐','⭐'][i]} ${x.name}</span><b>${x.total} pts</b></div>
+  `).join('');
+}
+$('groups').addEventListener('click', e => {
+  const b=e.target.closest('button[data-team]'); if(!b)return;
+  const t=+b.dataset.team,k=+b.dataset.k,d=+b.dataset.delta;
+  scores[currentClass][t][k]=Math.max(0,scores[currentClass][t][k]+d); render();
+});
+function chooseClass(n) {
+  currentClass=n;
+  $('class1').className=n===0?'':'secondary';
+  $('class2').className=n===1?'':'secondary';
+  $('classMsg').textContent=`Class ${n+1} points are independent.`;
+  render();
+}
+$('class1').onclick=()=>chooseClass(0);
+$('class2').onclick=()=>chooseClass(1);
+$('resetPoints').onclick=()=>{scores[currentClass]=teams.map(()=>[0,0,0,0]);render();};
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));
+  document.querySelectorAll('.page').forEach(p=>p.hidden=p.id!==b.dataset.page);
+}));
+function showClock(){ $('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');}
+function stopTimer(){if(timer){clearInterval(timer);timer=null;}}
+$('minutes').onchange=()=>{stopTimer();seconds=+$('minutes').value;showClock();$('timerStatus').textContent='Ready!';};
+$('start').onclick=()=>{if(timer)return;if(seconds<=0)seconds=+$('minutes').value;$('timerStatus').textContent='Activity started!';timer=setInterval(()=>{seconds--;showClock();if(seconds<=0){stopTimer();$('timerStatus').textContent="Time's up! 🎉";}},1000);};
+$('pause').onclick=()=>{stopTimer();$('timerStatus').textContent='Paused';};
+$('resetTimer').onclick=()=>{stopTimer();seconds=+$('minutes').value;showClock();$('timerStatus').textContent='Ready!';};
+showClock();
+function studentNames(){return $('names').value.split(/[\n,،]+/).map(x=>x.trim()).filter(Boolean);}
+$('pick').onclick=()=>{const n=studentNames();$('winner').textContent=n.length?'✨ '+n[Math.floor(Math.random()*n.length)]+' ✨':'Please enter names first.';};
+const roles=['Team Leader','Materials Manager','Speaker','Points Manager'];
+$('roleList').innerHTML=roles.map(role=>`
+  <div style="padding:10px 0;border-bottom:1px solid #526078">
+    <b style="color:#ffe4a3">${role}</b>
+    <div class="actions" style="margin-top:7px">
+      <input type="text" placeholder="Student name" aria-label="${role} student name" style="flex:1;min-width:0">
+      <button class="assign">Pick</button>
+    </div>
+  </div>`).join('');
+$('roleList').addEventListener('click',e=>{
+  const b=e.target.closest('.assign');if(!b)return;
+  const n=studentNames();
+  if(n.length)b.parentElement.querySelector('input').value=n[Math.floor(Math.random()*n.length)];
+  else $('winner').textContent='Enter names first in Names tab.';
+});
+$('mic').onclick=async()=>{
+  if(stream){
+    stream.getTracks().forEach(t=>t.stop());stream=null;
+    if(animation)cancelAnimationFrame(animation);
+    if(audioContext)await audioContext.close();
+    $('mic').textContent='🎤 Start Voice Meter';$('soundLabel').textContent='Stopped';$('bar').style.width='0%';return;
+  }
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    audioContext=new AudioContext();const analyser=audioContext.createAnalyser();analyser.fftSize=256;
+    audioContext.createMediaStreamSource(stream).connect(analyser);
+    const data=new Uint8Array(analyser.frequencyBinCount);$('mic').textContent='Stop Voice Meter';
+    function loop(){
+      if(!stream)return;
+      analyser.getByteTimeDomainData(data);let sum=0;
+      for(const v of data){const z=(v-128)/128;sum+=z*z;}
+      const level=Math.min(100,Math.round(Math.sqrt(sum/data.length)*350));
+      $('bar').style.width=level+'%';
+      $('soundLabel').textContent=level<12?'🤫 Excellent Silence':level<35?'🙂 Good Voice Level':level<65?'🔉 Lower Your Voices':'🔊 Too Loud!';
+      animation=requestAnimationFrame(loop);
+    }loop();
+  }catch(err){$('micMsg').textContent='Microphone access is unavailable. Please check browser permissions and use HTTPS.';}
+};
+render();
+})();
+</script>
+</body>
+</html>
