@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 3 – Interests | Vocabulary</title>
+<style>
+:root{--navy:#14233f;--gold:#d8b66a;--cream:#fffaf0;--ink:#243047;--muted:#68738a}
+*{box-sizing:border-box}body{margin:0;padding:18px;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#101d35,#2b3d5a);color:var(--ink)}
+.wrap{max-width:1050px;margin:auto}.hero{text-align:center;color:#fff;padding:20px 8px}.tag{color:var(--gold);font-weight:bold;letter-spacing:2px;font-size:13px}
+h1{font-size:clamp(28px,5vw,42px);margin:8px 0}.hero p{color:#e0e7f1;margin:0}
+.tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0 20px}
+button{font:inherit;cursor:pointer;border:0;border-radius:13px;padding:11px 14px;font-weight:bold}
+.filter{background:#ffffff18;color:#fff;border:1px solid #ffffff50}.filter.active{background:var(--gold);color:var(--navy)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px}
+.card{background:var(--cream);border:1px solid #eadfc7;border-radius:18px;padding:15px;box-shadow:0 8px 22px #0002;display:flex;flex-direction:column;gap:9px;min-height:168px}
+.num{font-size:12px;color:#9a7a3d;font-weight:bold}.word{direction:ltr;text-align:left;font-size:23px;font-weight:800;color:var(--navy)}
+.meaning{font-size:17px;color:#47536a;min-height:25px}.actions{display:flex;gap:8px;margin-top:auto}.play{background:var(--navy);color:white;flex:1}.arabic{background:#eee5d2;color:#39445a;flex:1}
+.panel{margin-top:20px;background:var(--cream);border-radius:18px;padding:18px}.panel h2{margin:0 0 12px;color:var(--navy)}
+.quizline{display:flex;gap:9px;align-items:center;flex-wrap:wrap}#question{font-size:19px;font-weight:bold;flex:1;min-width:170px}
+#answer{padding:12px;border:1px solid #d5c9ad;border-radius:12px;font:inherit;min-width:160px;flex:1}
+#check{background:var(--navy);color:white}#next{background:#eee5d2;color:#39445a}#feedback{margin-top:12px;font-weight:bold;min-height:24px}
+.footer{text-align:center;color:#d8deea;font-size:12px;margin:17px}
+</style></head><body><div class="wrap">
+<header class="hero"><div class="tag">ENGLISH • UNIT 3</div><h1>INTERESTS – كلمات الوحدة</h1><p>24 كلمة من كتاب الطالب • استمعي للنطق والمعنى ثم اختبري نفسك 🎧</p></header>
+<nav class="tools" id="filters">
+<button class="filter active" data-filter="all">كل الكلمات (24)</button>
+<button class="filter" data-filter="music">الموسيقى</button>
+<button class="filter" data-filter="events">المناسبات</button>
+<button class="filter" data-filter="activities">الأنشطة</button>
+<button class="filter" data-filter="games">الألعاب</button>
+<button class="filter" data-filter="other">كلمات أخرى</button>
+</nav>
+<main class="grid" id="cards"></main>
+<section class="panel"><h2>🎯 اختبري مفرداتك</h2><div class="quizline">
+<div id="question">ما معنى الكلمة؟</div><input id="answer" placeholder="اكتبي المعنى بالعربية">
+<button id="check">تحققي</button><button id="next">السؤال التالي</button></div><div id="feedback"></div></section>
+<div class="footer">اضغطي 🔊 لسماع النطق الإنجليزي أو المعنى العربي • Tr. Nayfah</div>
+</div>
+<script>
+const words = [{"w": "Bored", "m": "يشعر بالملل", "c": "feelings"}, {"w": "Classical", "m": "كلاسيكي", "c": "music"}, {"w": "Concert", "m": "حفل موسيقي", "c": "music"}, {"w": "Drum", "m": "طبل", "c": "music"}, {"w": "Festival", "m": "مهرجان", "c": "events"}, {"w": "Instrument", "m": "آلة موسيقية", "c": "music"}, {"w": "Invitation", "m": "دعوة", "c": "events"}, {"w": "Jazz", "m": "موسيقى الجاز", "c": "music"}, {"w": "Member", "m": "عضو", "c": "people"}, {"w": "Online", "m": "عبر الإنترنت", "c": "technology"}, {"w": "Oud", "m": "عود", "c": "music"}, {"w": "Prize", "m": "جائزة", "c": "other"}, {"w": "Traditional", "m": "تقليدي", "c": "music"}, {"w": "Violin", "m": "كمان", "c": "music"}, {"w": "Chess", "m": "شطرنج", "c": "games"}, {"w": "Collect", "m": "يجمع", "c": "activities"}, {"w": "Experiment", "m": "تجربة", "c": "activities"}, {"w": "Magazine", "m": "مجلة", "c": "media"}, {"w": "Midday", "m": "منتصف النهار", "c": "time"}, {"w": "Midnight", "m": "منتصف الليل", "c": "time"}, {"w": "Poetry", "m": "شعر", "c": "arts"}, {"w": "Puzzle", "m": "لغز", "c": "games"}, {"w": "Pyramid", "m": "هرم", "c": "places"}, {"w": "Stamp", "m": "طابع", "c": "objects"}];
+const cards=document.getElementById('cards');
+function speak(t,lang){if(!('speechSynthesis'in window)){alert('المتصفح لا يدعم النطق الصوتي. افتحي الصفحة في Safari أو Chrome.');return}
+speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang;u.rate=.82;speechSynthesis.speak(u)}
+function render(f='all'){cards.innerHTML='';words.forEach((x,i)=>{if(f!=='all'&&x.c!==f)return;
+const d=document.createElement('article');d.className='card';
+const n=document.createElement('div');n.className='num';n.textContent='WORD '+(i+1);
+const w=document.createElement('div');w.className='word';w.textContent=x.w;
+const m=document.createElement('div');m.className='meaning';m.textContent=x.m;
+const a=document.createElement('div');a.className='actions';
+const en=document.createElement('button');en.className='play';en.textContent='🔊 English';en.onclick=()=>speak(x.w,'en-US');
+const ar=document.createElement('button');ar.className='arabic';ar.textContent='🔊 العربية';ar.onclick=()=>speak(x.m,'ar-SA');
+a.append(en,ar);d.append(n,w,m,a);cards.append(d)})}
+document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(z=>z.classList.remove('active'));b.classList.add('active');render(b.dataset.filter)}));
+let current=0;function ask(){current=Math.floor(Math.random()*words.length);document.getElementById('question').textContent='ما معنى: '+words[current].w+' ؟';document.getElementById('answer').value='';document.getElementById('feedback').textContent='';speak(words[current].w,'en-US')}
+document.getElementById('check').onclick=()=>{const a=document.getElementById('answer').value.trim();const f=document.getElementById('feedback');if(a&&words[current].m.includes(a))f.textContent='أحسنتِ! إجابة صحيحة 🌟';else f.textContent='حاولي مرة أخرى. المعنى: '+words[current].m};
+document.getElementById('next').onclick=ask;render();ask();
+</script></body></html>
