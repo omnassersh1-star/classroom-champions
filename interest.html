@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interest | Vocabulary</title>
+<style>
+:root{--navy:#14233f;--gold:#d8b66a;--cream:#fffaf0;--ink:#243047;--muted:#68738a}
+*{box-sizing:border-box} body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#101d35,#263957);color:var(--ink);min-height:100vh;padding:22px}
+.wrap{max-width:980px;margin:auto}.hero{text-align:center;color:white;padding:18px 8px 24px}
+.hero .tag{color:var(--gold);font-weight:bold;letter-spacing:2px;font-size:13px}
+h1{margin:8px 0;font-size:clamp(28px,5vw,42px)}.hero p{margin:0;color:#e1e7f0}
+.toolbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 20px}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:11px 16px;font-weight:bold}
+.filter{background:#ffffff18;color:white;border:1px solid #ffffff45}.filter.active{background:var(--gold);color:#17243d}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:var(--cream);border:1px solid #eadfc7;border-radius:20px;padding:18px;box-shadow:0 9px 24px #0002;display:flex;flex-direction:column;gap:10px;min-height:185px}
+.word{direction:ltr;text-align:left;font-size:23px;font-weight:800;color:var(--navy)}
+.meaning{font-size:17px;color:#47536a;min-height:27px}
+.actions{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}
+.play{background:var(--navy);color:white;flex:1}.arabic{background:#eee5d2;color:#39445a}
+.small{font-size:12px;color:var(--muted)}
+.panel{margin-top:22px;background:#fffaf0;border-radius:20px;padding:20px}
+.panel h2{margin:0 0 12px;color:var(--navy)}
+.quizline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#question{font-size:20px;font-weight:bold;flex:1;min-width:180px}
+#answer{padding:11px;border:1px solid #d5c9ad;border-radius:12px;font:inherit;min-width:170px;flex:1}
+#feedback{margin-top:12px;font-weight:bold;min-height:24px}
+.footer{text-align:center;color:#d8deea;font-size:12px;margin:18px}
+@media(max-width:480px){body{padding:13px}.card{min-height:160px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+<div class="tag">ENGLISH • VOCABULARY</div>
+<h1>INTEREST – كلمات الوحدة</h1>
+<p>استمعي إلى النطق، تعرّفي على المعنى، ثم اختبري نفسك 🎵</p>
+</header>
+<nav class="toolbar" aria-label="تصنيف الكلمات">
+<button class="filter active" data-filter="all">كل الكلمات</button>
+<button class="filter" data-filter="instrument">الآلات الموسيقية</button>
+<button class="filter" data-filter="music">أنواع الموسيقى</button>
+<button class="filter" data-filter="other">كلمات أخرى</button>
+</nav>
+<main class="grid" id="cards"></main>
+<section class="panel">
+<h2>🎯 اختبري مفرداتك</h2>
+<div class="quizline">
+<div id="question">ما معنى كلمة: oud ؟</div>
+<input id="answer" type="text" placeholder="اكتبي المعنى بالعربية">
+<button class="play" id="check">تحققي</button>
+<button class="arabic" id="next">السؤال التالي</button>
+</div>
+<div id="feedback"></div>
+</section>
+<div class="footer">اضغطي 🔊 لسماع النطق باللغة الإنجليزية • Tr. Nayfah</div>
+</div>
+<script>
+const words=[
+{w:"musical instruments",m:"الآلات الموسيقية",c:"instrument"},
+{w:"oud",m:"العود",c:"instrument"},
+{w:"violin",m:"الكمان",c:"instrument"},
+{w:"drums",m:"الطبول",c:"instrument"},
+{w:"string",m:"وتر / آلة وترية",c:"instrument"},
+{w:"classical music",m:"الموسيقى الكلاسيكية",c:"music"},
+{w:"jazz music",m:"موسيقى الجاز",c:"music"},
+{w:"traditional music",m:"الموسيقى التقليدية / التراثية",c:"music"},
+{w:"concert",m:"حفل موسيقي",c:"other"}
+];
+const cards=document.getElementById("cards");
+function speak(text,lang){if(!("speechSynthesis" in window)){alert("ميزة الصوت غير مدعومة في هذا المتصفح.");return}
+speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=.82;speechSynthesis.speak(u)}
+function render(filter="all"){cards.innerHTML="";words.filter(x=>filter==="all"||x.c===filter).forEach(x=>{
+let d=document.createElement("article");d.className="card";
+d.innerHTML=`<div class="word">${x.w}</div><div class="meaning">${x.m}</div><div class="small">استمعي إلى الكلمة أو معناها</div><div class="actions"><button class="play">🔊 النطق</button><button class="arabic">🔊 المعنى</button></div>`;
+d.querySelector(".play").onclick=()=>speak(x.w,"en-US");d.querySelector(".arabic").onclick=()=>speak(x.m,"ar-SA");cards.appendChild(d)
+})}
+document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));b.classList.add("active");render(b.dataset.filter)});
+let current=1;
+function ask(){current=Math.floor(Math.random()*words.length);document.getElementById("question").textContent="ما معنى كلمة: "+words[current].w+" ؟";document.getElementById("answer").value="";document.getElementById("feedback").textContent="";speak(words[current].w,"en-US")}
+document.getElementById("check").onclick=()=>{let a=document.getElementById("answer").value.trim();let f=document.getElementById("feedback");if(a&& (words[current].m.includes(a)||a.includes(words[current].m.split(" / ")[0])))f.textContent="أحسنتِ! إجابة صحيحة 🌟";else f.textContent="حاولي مرة أخرى. المعنى: "+words[current].m};
+document.getElementById("next").onclick=ask;
+render();ask();
+</script>
+</body></html>
